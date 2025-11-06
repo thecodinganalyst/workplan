@@ -46,12 +46,14 @@ jobs:
             function mdWithMarker(item, body) {
               const marker = `<!-- BACKLOG-ID: ${item.id} -->`;
               // Keep marker at top; include normalized section for machine updates
-              return `${marker}
-${body.trim()}
-
----
-
-_Managed by backlog importer. Do not remove the marker above._`;
+              return [
+                marker,
+                body.trim(),
+                '',
+                '---',
+                '',
+                '_Managed by backlog importer. Do not remove the marker above._'
+              ].join('\n');
             }
 
             async function ensureLabels(labels) {
@@ -183,11 +185,13 @@ _Managed by backlog importer. Do not remove the marker above._`;
               const parentIssue = await github.rest.issues.get({ owner: OWNER, repo: REPO, issue_number: parentInfo.number });
               const line = `- [ ] #${info.number}`;
               if (!parentIssue.data.body.includes(line)) {
-                const newBody = `${parentIssue.data.body.trim()}
-
-**Backlog children**
-${line}
-`;
+                const newBody = [
+                  parentIssue.data.body.trim(),
+                  '',
+                  '**Backlog children**',
+                  line,
+                  ''
+                ].join('\n');
                 await github.rest.issues.update({
                   owner: OWNER, repo: REPO, issue_number: parentInfo.number, body: newBody
                 });
