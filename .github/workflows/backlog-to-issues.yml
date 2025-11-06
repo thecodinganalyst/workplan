@@ -12,9 +12,9 @@ on:
       - "backlog.yml"
 
 permissions:
-  contents: read
-  issues: write
-  projects: write
+    contents: read
+    issues: write
+    repository-projects: write
 
 jobs:
   import-backlog:
