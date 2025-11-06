@@ -1,0 +1,195 @@
+version: 1
+project_key: JLMVP
+
+defaults:
+  labels:
+    - backlog
+    - mvp
+  assignees: []        # e.g., ["octocat"]
+  milestone: null      # set a milestone title if you have one
+
+items:
+  # EPIC (represented as a normal GitHub issue with label "epic")
+  - id: EP-CORE
+    title: "EPIC: Core project setup"
+    body: |
+      MVP epic that covers: project creation, roles, auth/session, deploy pipeline.
+      **Goal:** a deployable skeleton with auth and a working DB.
+      <!-- Keep this section for context; edited by the backlog workflow -->
+    labels: ["epic", "mvp"]
+    assignees: []
+    milestone: null
+
+  - id: US-001
+    title: "US-001 Create project"
+    body: |
+      **As** a user  
+      **I want** to create a project with name + key  
+      **So that** my team can start organizing work
+
+      **Acceptance Criteria**
+      - Project can be created with `name` and `key`
+      - Creator becomes Project Admin
+      - Project appears in list
+    labels: ["user-story", "projects"]
+    parent: EP-CORE
+
+  - id: US-002
+    title: "US-002 Project roles: Admin/Member/Viewer"
+    body: |
+      Roles enforced for writes; everyone can view.
+      **AC**
+      - Admin can create/edit/delete issues and sprints
+      - Member can create/edit own issues, log work
+      - Viewer is read-only
+    labels: ["user-story", "security"]
+    parent: EP-CORE
+
+  - id: US-003
+    title: "US-003 Login & session (email/password)"
+    body: |
+      **AC**
+      - Sign up / login using email+password
+      - JWT session; logout clears session
+    labels: ["user-story", "auth"]
+    parent: EP-CORE
+
+  - id: EP-ISSUES
+    title: "EPIC: Issues (tasks & subtasks)"
+    body: |
+      Create and manage tasks/subtasks with unlimited nesting; time-based estimates.
+      **Scope:** task, subtask only (story/bug later)
+    labels: ["epic", "mvp"]
+
+  - id: US-010
+    title: "US-010 Create task"
+    body: |
+      **AC**
+      - Required: title
+      - status defaults to `todo`
+      - optional estimate (hours)
+    labels: ["user-story", "issues"]
+    parent: EP-ISSUES
+
+  - id: US-011
+    title: "US-011 Create subtask (nested)"
+    body: |
+      **AC**
+      - Select parent task
+      - Inherit project and sprint from parent (if set)
+    labels: ["user-story", "issues"]
+    parent: EP-ISSUES
+
+  - id: US-012
+    title: "US-012 Assign issue"
+    body: |
+      **AC**
+      - Assign/unassign to project members
+    labels: ["user-story", "issues"]
+    parent: EP-ISSUES
+
+  - id: US-013
+    title: "US-013 Update status (drag & drop)"
+    body: |
+      **AC**
+      - `todo ↔ doing ↔ done`
+      - On `done`, remaining estimate becomes 0
+    labels: ["user-story", "board"]
+    parent: EP-ISSUES
+
+  - id: US-014
+    title: "US-014 Edit estimates (hours)"
+    body: |
+      **AC**
+      - Edit original/remaining (hours)
+      - Remaining cannot be negative
+    labels: ["user-story", "issues"]
+    parent: EP-ISSUES
+
+  - id: EP-SPRINT
+    title: "EPIC: Sprints & board"
+    body: |
+      Create sprints, start/complete, 3-column board, allow unestimated items and scope change.
+    labels: ["epic", "mvp"]
+
+  - id: US-020
+    title: "US-020 Create sprint"
+    body: |
+      **AC**
+      - name, start/end dates
+      - states: PLANNED / ACTIVE / COMPLETED / CANCELLED
+    labels: ["user-story", "sprint"]
+    parent: EP-SPRINT
+
+  - id: US-021
+    title: "US-021 Start/complete sprint"
+    body: |
+      **AC**
+      - Can start with unestimated issues
+      - Can add/remove issues mid-sprint
+    labels: ["user-story", "sprint"]
+    parent: EP-SPRINT
+
+  - id: US-022
+    title: "US-022 Add/remove issue to sprint"
+    body: |
+      **AC**
+      - Log scope changes for reporting
+    labels: ["user-story", "sprint"]
+    parent: EP-SPRINT
+
+  - id: US-023
+    title: "US-023 Sprint board (3 columns)"
+    body: |
+      **AC**
+      - To Do / In Progress / Done
+      - Drag-drop; filter by assignee/status
+    labels: ["user-story", "board"]
+    parent: EP-SPRINT
+
+  - id: EP-WORKLOG
+    title: "EPIC: Work logs (time)"
+    body: |
+      Log time in hours; everyone can view.
+    labels: ["epic", "mvp"]
+
+  - id: US-030
+    title: "US-030 Log work"
+    body: |
+      **AC**
+      - Start time, duration (hours), optional comment
+      - (Optional toggle) auto-adjust remaining estimate
+    labels: ["user-story", "time-tracking"]
+    parent: EP-WORKLOG
+
+  - id: US-031
+    title: "US-031 View work logs on issue"
+    body: |
+      **AC**
+      - Reverse-chronological list
+      - Show total time
+    labels: ["user-story", "time-tracking"]
+    parent: EP-WORKLOG
+
+  - id: EP-BURNDOWN
+    title: "EPIC: Burndown"
+    body: |
+      Nightly snapshot job and burndown chart.
+    labels: ["epic", "mvp"]
+
+  - id: US-040
+    title: "US-040 Daily snapshot job"
+    body: |
+      **AC**
+      - Nightly write remaining/added/removed minutes per sprint/day
+    labels: ["user-story", "reporting"]
+    parent: EP-BURNDOWN
+
+  - id: US-041
+    title: "US-041 Burndown chart"
+    body: |
+      **AC**
+      - Remaining time vs day
+      - Annotations for scope add/remove
+    labels: ["user-story", "reporting"]
+    parent: EP-BURNDOWN
