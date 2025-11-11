@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OTP sent</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <h1>Check your inbox</h1>
+    <div class="alert" th:text="${message}">An OTP has been sent.</div>
+    <p>Enter the code we sent to <strong th:text="${email}">email@example.com</strong> to access Workplan.</p>
+    <p><a th:href="@{/}" href="/">Return to the login page</a></p>
+</div>
+</body>
+</html>

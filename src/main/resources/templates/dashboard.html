@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${project.name} + ' · Workplan'">Project dashboard</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1 th:text="${project.name}">Project Name</h1>
+            <p>Manage your team and invite new members.</p>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Log out</button>
+        </form>
+    </header>
+
+    <section class="card">
+        <h2>Team members</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.name}">Taylor Doe</td>
+                <td th:text="${user.email}">admin@example.com</td>
+                <td th:text="${user.role}">ADMIN</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="card">
+        <h2>Add someone new</h2>
+        <p>Invite a scrum master, developer, or project owner by sending them a login code.</p>
+        <form th:action="@{/dashboard/users}" th:object="${createUserForm}" method="post">
+            <div class="field">
+                <label for="name">Full name</label>
+                <input id="name" type="text" th:field="*{name}" placeholder="Jordan"/>
+                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+            <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" th:field="*{email}" placeholder="person@example.com"/>
+                <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+            <div class="field">
+                <label for="role">Role</label>
+                <select id="role" th:field="*{role}">
+                    <option th:value="${null}" disabled th:selected="${*{role} == null}">Select a role</option>
+                    <option th:each="role : ${availableRoles}" th:value="${role}" th:text="${role}"></option>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+            </div>
+            <div class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+            <div class="form-actions">
+                <button type="submit">Send invite</button>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+</html>

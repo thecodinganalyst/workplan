@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign in to Workplan</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <h1>Workplan Login</h1>
+    <p>Sign in with a one-time password sent to your email address.</p>
+
+    <div class="card">
+        <section>
+            <h2>Request a login code</h2>
+            <form th:action="@{/login/request-otp}" th:object="${otpRequestForm}" method="post">
+                <div class="field">
+                    <label for="requestEmail">Email address</label>
+                    <input id="requestEmail" type="email" th:field="*{email}" placeholder="you@example.com"/>
+                    <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Send code</button>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Already have a code?</h2>
+            <form th:action="@{/login/verify}" th:object="${otpVerificationForm}" method="post">
+                <div class="field">
+                    <label for="verifyEmail">Email address</label>
+                    <input id="verifyEmail" type="email" th:field="*{email}" placeholder="you@example.com"/>
+                    <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="field">
+                    <label for="otp">One-time password</label>
+                    <input id="otp" type="text" th:field="*{otp}" placeholder="123456"/>
+                    <div class="error" th:if="${#fields.hasErrors('otp')}" th:errors="*{otp}"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Sign in</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+</body>
+</html>

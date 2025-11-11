@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Initial Project Setup</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome to Workplan</h1>
+    <p>Create your first project and administrator to get started.</p>
+
+    <form th:action="@{/setup}" method="post" th:object="${projectSetupForm}" class="card">
+        <div class="field">
+            <label for="projectName">Project name</label>
+            <input id="projectName" type="text" th:field="*{projectName}" placeholder="e.g. Apollo"/>
+            <div class="error" th:if="${#fields.hasErrors('projectName')}" th:errors="*{projectName}"></div>
+        </div>
+        <div class="field">
+            <label for="adminName">Administrator name</label>
+            <input id="adminName" type="text" th:field="*{adminName}" placeholder="e.g. Taylor"/>
+            <div class="error" th:if="${#fields.hasErrors('adminName')}" th:errors="*{adminName}"></div>
+        </div>
+        <div class="field">
+            <label for="adminEmail">Administrator email</label>
+            <input id="adminEmail" type="email" th:field="*{adminEmail}" placeholder="admin@example.com"/>
+            <div class="error" th:if="${#fields.hasErrors('adminEmail')}" th:errors="*{adminEmail}"></div>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Create project</button>
+        </div>
+        <div class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+    </form>
+</div>
+</body>
+</html>
