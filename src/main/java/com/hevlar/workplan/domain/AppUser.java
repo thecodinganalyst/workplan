@@ -1,4 +1,4 @@
-package com.example.workplan.domain;
+package com.hevlar.workplan.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

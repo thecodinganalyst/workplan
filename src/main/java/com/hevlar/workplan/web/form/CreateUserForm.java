@@ -1,6 +1,6 @@
-package com.example.workplan.web.form;
+package com.hevlar.workplan.web.form;
 
-import com.example.workplan.domain.UserRole;
+import com.hevlar.workplan.domain.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package com.example.workplan;
+package com.hevlar.workplan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

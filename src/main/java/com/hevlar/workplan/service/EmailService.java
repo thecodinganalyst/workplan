@@ -1,4 +1,4 @@
-package com.example.workplan.service;
+package com.hevlar.workplan.service;
 
 public interface EmailService {
 
