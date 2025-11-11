@@ -1,4 +1,4 @@
-package com.example.workplan;
+package com.hevlar.workplan;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

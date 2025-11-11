@@ -1,4 +1,4 @@
-package com.example.workplan.domain;
+package com.hevlar.workplan.domain;
 
 public enum UserRole {
     ADMIN,

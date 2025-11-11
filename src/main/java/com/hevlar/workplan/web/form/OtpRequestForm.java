@@ -1,4 +1,4 @@
-package com.example.workplan.web.form;
+package com.hevlar.workplan.web.form;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

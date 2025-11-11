@@ -1,7 +1,7 @@
-package com.example.workplan.service;
+package com.hevlar.workplan.service;
 
-import com.example.workplan.domain.Project;
-import com.example.workplan.repository.ProjectRepository;
+import com.hevlar.workplan.domain.Project;
+import com.hevlar.workplan.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

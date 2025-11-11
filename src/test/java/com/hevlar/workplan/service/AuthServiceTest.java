@@ -1,9 +1,9 @@
-package com.example.workplan.service;
+package com.hevlar.workplan.service;
 
-import com.example.workplan.domain.AppUser;
-import com.example.workplan.domain.Project;
-import com.example.workplan.domain.UserRole;
-import com.example.workplan.repository.AppUserRepository;
+import com.hevlar.workplan.domain.AppUser;
+import com.hevlar.workplan.domain.Project;
+import com.hevlar.workplan.domain.UserRole;
+import com.hevlar.workplan.repository.AppUserRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

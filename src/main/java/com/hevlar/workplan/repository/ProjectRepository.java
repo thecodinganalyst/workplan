@@ -1,6 +1,6 @@
-package com.example.workplan.repository;
+package com.hevlar.workplan.repository;
 
-import com.example.workplan.domain.Project;
+import com.hevlar.workplan.domain.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
