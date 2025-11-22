@@ -33,7 +33,8 @@ h1 {
 }
 
 .field input,
-.field select {
+.field select,
+.field textarea {
     padding: 10px 12px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
@@ -41,7 +42,8 @@ h1 {
 }
 
 .field input:focus,
-.field select:focus {
+.field select:focus,
+.field textarea:focus {
     outline: none;
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
@@ -106,4 +108,73 @@ header {
 
 header form {
     margin: 0;
+}
+
+.backlog {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.backlog-module {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    background: #f9fafb;
+}
+
+.backlog-feature {
+    border-left: 3px solid #2563eb;
+    padding-left: 12px;
+    margin-top: 12px;
+}
+
+.badge {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+}
+
+.task-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 12px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.task-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    font-size: 0.85rem;
+    color: #4b5563;
+}
+
+.backlog-forms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+}
+
+.backlog-forms form {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    background: #f9fafb;
+}
+
+.empty-state {
+    font-size: 0.9rem;
+    color: #6b7280;
 }
