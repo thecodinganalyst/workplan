@@ -11,8 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "task")
 public class Task {
 
@@ -40,59 +46,4 @@ public class Task {
     @JoinColumn(name = "assignee_id")
     private AppUser assignee;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Feature getFeature() {
-        return feature;
-    }
-
-    public void setFeature(Feature feature) {
-        this.feature = feature;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public WorkItemStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(WorkItemStatus status) {
-        this.status = status;
-    }
-
-    public Integer getEstimatedHours() {
-        return estimatedHours;
-    }
-
-    public void setEstimatedHours(Integer estimatedHours) {
-        this.estimatedHours = estimatedHours;
-    }
-
-    public AppUser getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(AppUser assignee) {
-        this.assignee = assignee;
-    }
 }

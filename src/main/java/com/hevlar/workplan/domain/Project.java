@@ -9,11 +9,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "project")
 public class Project {
 
@@ -30,35 +36,4 @@ public class Project {
     @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Backlog backlog;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<AppUser> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<AppUser> users) {
-        this.users = users;
-    }
-
-    public Backlog getBacklog() {
-        return backlog;
-    }
-
-    public void setBacklog(Backlog backlog) {
-        this.backlog = backlog;
-    }
 }
