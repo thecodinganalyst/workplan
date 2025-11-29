@@ -11,11 +11,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "backlog")
 public class Backlog {
 
@@ -36,43 +42,4 @@ public class Backlog {
     @OneToMany(mappedBy = "backlog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectModule> modules = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getVision() {
-        return vision;
-    }
-
-    public void setVision(String vision) {
-        this.vision = vision;
-    }
-
-    public List<ProjectModule> getModules() {
-        return modules;
-    }
-
-    public void setModules(List<ProjectModule> modules) {
-        this.modules = modules;
-    }
 }
