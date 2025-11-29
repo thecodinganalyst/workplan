@@ -1,0 +1,77 @@
+title: Workplan Domain Model
+diagram: |-
+  ---
+  title: Workplan Domain Model
+  ---
+  classDiagram
+    direction TB
+
+    class Project {
+      Long id
+      String name
+    }
+
+    class AppUser {
+      Long id
+      String name
+      String email
+      UserRole role
+      String latestOtp
+      LocalDateTime otpGeneratedAt
+    }
+
+    class Backlog {
+      Long id
+      String name
+      String vision
+    }
+
+    class ProjectModule {
+      Long id
+      String name
+      String description
+    }
+
+    class Feature {
+      Long id
+      String name
+      String description
+      WorkItemStatus status
+    }
+
+    class Task {
+      Long id
+      String name
+      String description
+      WorkItemStatus status
+      Integer estimatedHours
+    }
+
+    class UserRole {
+      <<enumeration>>
+      ADMIN
+      SCRUM_MASTER
+      DEVELOPER
+      PROJECT_OWNER
+    }
+
+    class WorkItemStatus {
+      <<enumeration>>
+      PLANNED
+      IN_PROGRESS
+      BLOCKED
+      COMPLETE
+    }
+
+    Project "1" --> "many" AppUser : users
+    Project "1" --> "1" Backlog : backlog
+    Backlog "1" --> "many" ProjectModule : modules
+    ProjectModule "1" --> "many" Feature : features
+    Feature "1" --> "many" Task : tasks
+
+    AppUser "many" --> "1" Project : project
+    Task "many" --> "0..1" AppUser : assignee
+    Task "many" --> "1" Feature : feature
+    Feature "many" --> "1" ProjectModule : module
+    ProjectModule "many" --> "1" Backlog : backlog
+    Backlog "many" --> "1" Project : project
