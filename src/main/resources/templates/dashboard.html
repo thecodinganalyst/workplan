@@ -40,30 +40,9 @@
     <section class="card">
         <h2>Add someone new</h2>
         <p>Invite a scrum master, developer, or project owner by sending them a login code.</p>
-        <form th:action="@{/dashboard/users}" th:object="${createUserForm}" method="post">
-            <div class="field">
-                <label for="name">Full name</label>
-                <input id="name" type="text" th:field="*{name}" placeholder="Jordan"/>
-                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-            </div>
-            <div class="field">
-                <label for="email">Email</label>
-                <input id="email" type="email" th:field="*{email}" placeholder="person@example.com"/>
-                <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-            </div>
-            <div class="field">
-                <label for="role">Role</label>
-                <select id="role" th:field="*{role}">
-                    <option value="" disabled th:selected="${createUserForm == null or createUserForm.role == null}">Select a role</option>
-                    <option th:each="role : ${availableRoles}" th:value="${role}" th:text="${role}"></option>
-                </select>
-                <div class="error" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
-            </div>
-            <div class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
-            <div class="form-actions">
-                <button type="submit">Send invite</button>
-            </div>
-        </form>
+        <div class="form-links">
+            <a th:href="@{/dashboard/users/new}" class="button secondary">Invite someone</a>
+        </div>
     </section>
 
     <section class="card">
@@ -104,85 +83,11 @@
 
     <section class="card">
         <h2>Plan new work</h2>
-        <div class="backlog-forms">
-            <form th:action="@{/dashboard/backlog/modules}" th:object="${moduleForm}" method="post">
-                <h3>Add module</h3>
-                <div class="field">
-                    <label for="module-name">Name</label>
-                    <input id="module-name" type="text" th:field="*{name}" placeholder="Payments" />
-                    <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                </div>
-                <div class="field">
-                    <label for="module-description">Description</label>
-                    <textarea id="module-description" th:field="*{description}" placeholder="What problem does this module solve?"></textarea>
-                </div>
-                <div class="form-actions">
-                    <button type="submit">Add module</button>
-                </div>
-            </form>
-
-            <form th:action="@{/dashboard/backlog/features}" th:object="${featureForm}" method="post">
-                <h3>Add feature</h3>
-                <div class="field">
-                    <label for="feature-module">Module</label>
-                    <select id="feature-module" th:field="*{moduleId}">
-                        <option value="" disabled th:selected="${featureForm == null or featureForm.moduleId == null}">Select a module</option>
-                        <option th:each="module : ${modules}" th:value="${module.id}" th:text="${module.name}"></option>
-                    </select>
-                    <div class="error" th:if="${#fields.hasErrors('moduleId')}" th:errors="*{moduleId}"></div>
-                </div>
-                <div class="field">
-                    <label for="feature-name">Name</label>
-                    <input id="feature-name" type="text" th:field="*{name}" placeholder="Recurring payments" />
-                    <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                </div>
-                <div class="field">
-                    <label for="feature-description">Description</label>
-                    <textarea id="feature-description" th:field="*{description}" placeholder="Describe the feature scope."></textarea>
-                </div>
-                <div class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
-                <div class="form-actions">
-                    <button type="submit">Add feature</button>
-                </div>
-            </form>
-
-            <form th:action="@{/dashboard/backlog/tasks}" th:object="${taskForm}" method="post">
-                <h3>Add task</h3>
-                <div class="field">
-                    <label for="task-feature">Feature</label>
-                    <select id="task-feature" th:field="*{featureId}">
-                        <option value="" disabled th:selected="${taskForm == null or taskForm.featureId == null}">Select a feature</option>
-                        <option th:each="feature : ${features}" th:value="${feature.id}" th:text="${feature.name}"></option>
-                    </select>
-                    <div class="error" th:if="${#fields.hasErrors('featureId')}" th:errors="*{featureId}"></div>
-                </div>
-                <div class="field">
-                    <label for="task-name">Name</label>
-                    <input id="task-name" type="text" th:field="*{name}" placeholder="Build API endpoint" />
-                    <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                </div>
-                <div class="field">
-                    <label for="task-description">Description</label>
-                    <textarea id="task-description" th:field="*{description}" placeholder="Describe the work involved."></textarea>
-                </div>
-                <div class="field">
-                    <label for="task-estimate">Estimated effort (hours)</label>
-                    <input id="task-estimate" type="number" min="1" th:field="*{estimatedHours}" placeholder="4" />
-                    <div class="error" th:if="${#fields.hasErrors('estimatedHours')}" th:errors="*{estimatedHours}"></div>
-                </div>
-                <div class="field">
-                    <label for="task-assignee">Assign to developer</label>
-                    <select id="task-assignee" th:field="*{assigneeId}">
-                        <option value="" th:selected="${taskForm == null or taskForm.assigneeId == null}">Unassigned</option>
-                        <option th:each="dev : ${developers}" th:value="${dev.id}" th:text="${dev.name} + ' (' + dev.email + ')'" ></option>
-                    </select>
-                    <div class="error" th:if="${#fields.hasErrors('assigneeId')}" th:errors="*{assigneeId}"></div>
-                </div>
-                <div class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
-                <div class="form-actions">
-                    <button type="submit">Add task</button>
-                </div>
-            </form>
+        <p>Capture modules, features, and tasks using dedicated pages so each form is easier to focus on.</p>
+        <div class="form-links">
+            <a th:href="@{/dashboard/backlog/modules/new}" class="button">Add module</a>
+            <a th:href="@{/dashboard/backlog/features/new}" class="button">Add feature</a>
+            <a th:href="@{/dashboard/backlog/tasks/new}" class="button">Add task</a>
         </div>
     </section>
 </div>

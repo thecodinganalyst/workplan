@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${project.name} + ' · New task'">Add task</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1>Add task</h1>
+            <p>Plan a task inside <strong th:text="${project.name}">this project</strong>'s backlog.</p>
+        </div>
+        <a th:href="@{/dashboard}" class="button secondary">Back to dashboard</a>
+    </header>
+
+    <form th:action="@{/dashboard/backlog/tasks}" th:object="${taskForm}" method="post" class="card">
+        <div class="field">
+            <label for="task-feature">Feature</label>
+            <select id="task-feature" th:field="*{featureId}">
+                <option value="" disabled th:selected="${taskForm == null or taskForm.featureId == null}">Select a feature</option>
+                <option th:each="feature : ${features}" th:value="${feature.id}" th:text="${feature.name}"></option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('featureId')}" th:errors="*{featureId}"></div>
+        </div>
+        <div class="field">
+            <label for="task-name">Name</label>
+            <input id="task-name" type="text" th:field="*{name}" placeholder="Build API endpoint" />
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <div class="field">
+            <label for="task-description">Description</label>
+            <textarea id="task-description" th:field="*{description}" placeholder="Describe the work involved."></textarea>
+        </div>
+        <div class="field">
+            <label for="task-estimate">Estimated effort (hours)</label>
+            <input id="task-estimate" type="number" min="1" th:field="*{estimatedHours}" placeholder="4" />
+            <div class="error" th:if="${#fields.hasErrors('estimatedHours')}" th:errors="*{estimatedHours}"></div>
+        </div>
+        <div class="field">
+            <label for="task-assignee">Assign to developer</label>
+            <select id="task-assignee" th:field="*{assigneeId}">
+                <option value="" th:selected="${taskForm == null or taskForm.assigneeId == null}">Unassigned</option>
+                <option th:each="dev : ${developers}" th:value="${dev.id}" th:text="${dev.name} + ' (' + dev.email + ')'" ></option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('assigneeId')}" th:errors="*{assigneeId}"></div>
+        </div>
+        <div class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        <div class="form-actions">
+            <button type="submit">Add task</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

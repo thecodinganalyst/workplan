@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${project.name} + ' · New feature'">Add feature</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1>Add feature</h1>
+            <p>Attach a new feature to one of <strong th:text="${project.name}">the project</strong>'s modules.</p>
+        </div>
+        <a th:href="@{/dashboard}" class="button secondary">Back to dashboard</a>
+    </header>
+
+    <form th:action="@{/dashboard/backlog/features}" th:object="${featureForm}" method="post" class="card">
+        <div class="field">
+            <label for="feature-module">Module</label>
+            <select id="feature-module" th:field="*{moduleId}">
+                <option value="" disabled th:selected="${featureForm == null or featureForm.moduleId == null}">Select a module</option>
+                <option th:each="module : ${modules}" th:value="${module.id}" th:text="${module.name}"></option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('moduleId')}" th:errors="*{moduleId}"></div>
+        </div>
+        <div class="field">
+            <label for="feature-name">Name</label>
+            <input id="feature-name" type="text" th:field="*{name}" placeholder="Recurring payments" />
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <div class="field">
+            <label for="feature-description">Description</label>
+            <textarea id="feature-description" th:field="*{description}" placeholder="Describe the feature scope."></textarea>
+        </div>
+        <div class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        <div class="form-actions">
+            <button type="submit">Add feature</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
