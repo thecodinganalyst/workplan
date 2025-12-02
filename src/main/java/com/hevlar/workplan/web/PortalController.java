@@ -1,7 +1,6 @@
 package com.hevlar.workplan.web;
 
 import com.hevlar.workplan.domain.AppUser;
-import com.hevlar.workplan.domain.AppUser;
 import com.hevlar.workplan.domain.Project;
 import com.hevlar.workplan.domain.ProjectModule;
 import com.hevlar.workplan.domain.UserRole;
@@ -171,13 +170,188 @@ public class PortalController {
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
-        Optional<AppUser> currentUser = authenticatedUser(session);
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
         if (currentUser.isEmpty()) {
             return "redirect:/";
         }
-        if (currentUser.get().getRole() != UserRole.ADMIN) {
+        populateProjectContext(model);
+        return "dashboard";
+    }
+
+    @GetMapping("/dashboard/users/new")
+    public String newUser(HttpSession session, Model model) {
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
+        if (currentUser.isEmpty()) {
             return "redirect:/";
         }
+        if (!model.containsAttribute("createUserForm")) {
+            model.addAttribute("createUserForm", new CreateUserForm());
+        }
+        populateProjectContext(model);
+        return "user-form";
+    }
+
+    @GetMapping("/dashboard/backlog/modules/new")
+    public String newModule(HttpSession session, Model model) {
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
+        if (currentUser.isEmpty()) {
+            return "redirect:/";
+        }
+        if (!model.containsAttribute("moduleForm")) {
+            model.addAttribute("moduleForm", new ModuleForm());
+        }
+        populateProjectContext(model);
+        return "module-form";
+    }
+
+    @GetMapping("/dashboard/backlog/features/new")
+    public String newFeature(HttpSession session, Model model) {
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
+        if (currentUser.isEmpty()) {
+            return "redirect:/";
+        }
+        if (!model.containsAttribute("featureForm")) {
+            model.addAttribute("featureForm", new FeatureForm());
+        }
+        populateProjectContext(model);
+        return "feature-form";
+    }
+
+    @GetMapping("/dashboard/backlog/tasks/new")
+    public String newTask(HttpSession session, Model model) {
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
+        if (currentUser.isEmpty()) {
+            return "redirect:/";
+        }
+        if (!model.containsAttribute("taskForm")) {
+            model.addAttribute("taskForm", new TaskForm());
+        }
+        populateProjectContext(model);
+        return "task-form";
+    }
+
+    @PostMapping("/dashboard/users")
+    public String createUser(@Valid @ModelAttribute("createUserForm") CreateUserForm form,
+                             BindingResult bindingResult,
+                             HttpSession session,
+                             Model model) {
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
+        if (currentUser.isEmpty()) {
+            return "redirect:/";
+        }
+        if (bindingResult.hasErrors()) {
+            populateProjectContext(model);
+            return "user-form";
+        }
+        Project project = projectService.getProject()
+            .orElseThrow(() -> new IllegalStateException("Project should be present"));
+        try {
+            AppUser newUser = userService.createUser(project, form.getName(), form.getEmail(), form.getRole());
+            String otp = authService.generateOtpForUser(newUser);
+            sendOtpEmail(newUser, otp, project.getName());
+        } catch (IllegalStateException | IllegalArgumentException ex) {
+            bindingResult.reject("user.create", ex.getMessage());
+            populateProjectContext(model);
+            return "user-form";
+        }
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/dashboard/backlog/modules")
+    public String createModule(@Valid @ModelAttribute("moduleForm") ModuleForm form,
+                               BindingResult bindingResult,
+                               HttpSession session,
+                               Model model) {
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
+        if (currentUser.isEmpty()) {
+            return "redirect:/";
+        }
+        if (bindingResult.hasErrors()) {
+            populateProjectContext(model);
+            return "module-form";
+        }
+        Project project = projectService.getProject()
+            .orElseThrow(() -> new IllegalStateException("Project should be present"));
+        backlogService.addModule(project, form.getName(), form.getDescription());
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/dashboard/backlog/features")
+    public String createFeature(@Valid @ModelAttribute("featureForm") FeatureForm form,
+                                BindingResult bindingResult,
+                                HttpSession session,
+                                Model model) {
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
+        if (currentUser.isEmpty()) {
+            return "redirect:/";
+        }
+        if (bindingResult.hasErrors()) {
+            populateProjectContext(model);
+            return "feature-form";
+        }
+        try {
+            backlogService.addFeature(form.getModuleId(), form.getName(), form.getDescription());
+        } catch (IllegalArgumentException ex) {
+            bindingResult.reject("feature.create", ex.getMessage());
+            populateProjectContext(model);
+            return "feature-form";
+        }
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/dashboard/backlog/tasks")
+    public String createTask(@Valid @ModelAttribute("taskForm") TaskForm form,
+                             BindingResult bindingResult,
+                             HttpSession session,
+                             Model model) {
+        Optional<AppUser> currentUser = authenticatedAdmin(session);
+        if (currentUser.isEmpty()) {
+            return "redirect:/";
+        }
+        if (bindingResult.hasErrors()) {
+            populateProjectContext(model);
+            return "task-form";
+        }
+        AppUser assignee = null;
+        if (form.getAssigneeId() != null) {
+            assignee = userService.findById(form.getAssigneeId())
+                .orElseThrow(() -> new IllegalArgumentException("Assignee not found"));
+            if (assignee.getRole() != UserRole.DEVELOPER) {
+                bindingResult.rejectValue("assigneeId", "assignee.role", "Only developers can be assigned to tasks");
+                populateProjectContext(model);
+                return "task-form";
+            }
+        }
+        try {
+            backlogService.addTask(form.getFeatureId(), form.getName(), form.getDescription(), form.getEstimatedHours(), assignee);
+        } catch (IllegalArgumentException ex) {
+            bindingResult.reject("task.create", ex.getMessage());
+            populateProjectContext(model);
+            return "task-form";
+        }
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+
+    private Optional<AppUser> authenticatedUser(HttpSession session) {
+        Long userId = (Long) session.getAttribute(SESSION_USER_ID);
+        if (userId == null) {
+            return Optional.empty();
+        }
+        return userService.findById(userId);
+    }
+
+    private Optional<AppUser> authenticatedAdmin(HttpSession session) {
+        return authenticatedUser(session)
+            .filter(user -> user.getRole() == UserRole.ADMIN);
+    }
+
+    private void populateProjectContext(Model model) {
         Project project = projectService.getProject()
             .orElseThrow(() -> new IllegalStateException("Project should be present"));
         if (!model.containsAttribute("createUserForm")) {
@@ -200,115 +374,6 @@ public class PortalController {
         model.addAttribute("developers", project.getUsers().stream()
             .filter(user -> user.getRole() == UserRole.DEVELOPER)
             .toList());
-        return "dashboard";
-    }
-
-    @PostMapping("/dashboard/users")
-    public String createUser(@Valid @ModelAttribute("createUserForm") CreateUserForm form,
-                             BindingResult bindingResult,
-                             HttpSession session,
-                             Model model) {
-        Optional<AppUser> currentUser = authenticatedUser(session);
-        if (currentUser.isEmpty() || currentUser.get().getRole() != UserRole.ADMIN) {
-            return "redirect:/";
-        }
-        if (bindingResult.hasErrors()) {
-            return dashboard(session, model);
-        }
-        Project project = projectService.getProject()
-            .orElseThrow(() -> new IllegalStateException("Project should be present"));
-        try {
-            AppUser newUser = userService.createUser(project, form.getName(), form.getEmail(), form.getRole());
-            String otp = authService.generateOtpForUser(newUser);
-            sendOtpEmail(newUser, otp, project.getName());
-        } catch (IllegalStateException | IllegalArgumentException ex) {
-            bindingResult.reject("user.create", ex.getMessage());
-            return dashboard(session, model);
-        }
-        return "redirect:/dashboard";
-    }
-
-    @PostMapping("/dashboard/backlog/modules")
-    public String createModule(@Valid @ModelAttribute("moduleForm") ModuleForm form,
-                               BindingResult bindingResult,
-                               HttpSession session,
-                               Model model) {
-        Optional<AppUser> currentUser = authenticatedUser(session);
-        if (currentUser.isEmpty() || currentUser.get().getRole() != UserRole.ADMIN) {
-            return "redirect:/";
-        }
-        if (bindingResult.hasErrors()) {
-            return dashboard(session, model);
-        }
-        Project project = projectService.getProject()
-            .orElseThrow(() -> new IllegalStateException("Project should be present"));
-        backlogService.addModule(project, form.getName(), form.getDescription());
-        return "redirect:/dashboard";
-    }
-
-    @PostMapping("/dashboard/backlog/features")
-    public String createFeature(@Valid @ModelAttribute("featureForm") FeatureForm form,
-                                BindingResult bindingResult,
-                                HttpSession session,
-                                Model model) {
-        Optional<AppUser> currentUser = authenticatedUser(session);
-        if (currentUser.isEmpty() || currentUser.get().getRole() != UserRole.ADMIN) {
-            return "redirect:/";
-        }
-        if (bindingResult.hasErrors()) {
-            return dashboard(session, model);
-        }
-        try {
-            backlogService.addFeature(form.getModuleId(), form.getName(), form.getDescription());
-        } catch (IllegalArgumentException ex) {
-            bindingResult.reject("feature.create", ex.getMessage());
-            return dashboard(session, model);
-        }
-        return "redirect:/dashboard";
-    }
-
-    @PostMapping("/dashboard/backlog/tasks")
-    public String createTask(@Valid @ModelAttribute("taskForm") TaskForm form,
-                             BindingResult bindingResult,
-                             HttpSession session,
-                             Model model) {
-        Optional<AppUser> currentUser = authenticatedUser(session);
-        if (currentUser.isEmpty() || currentUser.get().getRole() != UserRole.ADMIN) {
-            return "redirect:/";
-        }
-        if (bindingResult.hasErrors()) {
-            return dashboard(session, model);
-        }
-        AppUser assignee = null;
-        if (form.getAssigneeId() != null) {
-            assignee = userService.findById(form.getAssigneeId())
-                .orElseThrow(() -> new IllegalArgumentException("Assignee not found"));
-            if (assignee.getRole() != UserRole.DEVELOPER) {
-                bindingResult.rejectValue("assigneeId", "assignee.role", "Only developers can be assigned to tasks");
-                return dashboard(session, model);
-            }
-        }
-        try {
-            backlogService.addTask(form.getFeatureId(), form.getName(), form.getDescription(), form.getEstimatedHours(), assignee);
-        } catch (IllegalArgumentException ex) {
-            bindingResult.reject("task.create", ex.getMessage());
-            return dashboard(session, model);
-        }
-        return "redirect:/dashboard";
-    }
-
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
-    }
-
-    private Optional<AppUser> authenticatedUser(HttpSession session) {
-        Long userId = (Long) session.getAttribute(SESSION_USER_ID);
-        if (userId == null) {
-            return Optional.empty();
-        }
-        return userService.findById(userId);
     }
 
     private void sendOtpEmail(AppUser user, String otp, String projectName) {

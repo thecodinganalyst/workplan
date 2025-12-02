@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${project.name} + ' · Invite user'">Invite user</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1>Invite a teammate</h1>
+            <p>Send a login code to add someone to <strong th:text="${project.name}">the project</strong>.</p>
+        </div>
+        <a th:href="@{/dashboard}" class="button secondary">Back to dashboard</a>
+    </header>
+
+    <form th:action="@{/dashboard/users}" th:object="${createUserForm}" method="post" class="card">
+        <div class="field">
+            <label for="name">Full name</label>
+            <input id="name" type="text" th:field="*{name}" placeholder="Jordan"/>
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" th:field="*{email}" placeholder="person@example.com"/>
+            <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+        <div class="field">
+            <label for="role">Role</label>
+            <select id="role" th:field="*{role}">
+                <option value="" disabled th:selected="${createUserForm == null or createUserForm.role == null}">Select a role</option>
+                <option th:each="role : ${availableRoles}" th:value="${role}" th:text="${role}"></option>
+            </select>
+            <div class="error" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+        </div>
+        <div class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        <div class="form-actions">
+            <button type="submit">Send invite</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${project.name} + ' · New module'">Add module</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1>Add module</h1>
+            <p>Group features into a module for <strong th:text="${project.name}">this project</strong>.</p>
+        </div>
+        <a th:href="@{/dashboard}" class="button secondary">Back to dashboard</a>
+    </header>
+
+    <form th:action="@{/dashboard/backlog/modules}" th:object="${moduleForm}" method="post" class="card">
+        <div class="field">
+            <label for="module-name">Name</label>
+            <input id="module-name" type="text" th:field="*{name}" placeholder="Payments" />
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <div class="field">
+            <label for="module-description">Description</label>
+            <textarea id="module-description" th:field="*{description}" placeholder="What problem does this module solve?"></textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Add module</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

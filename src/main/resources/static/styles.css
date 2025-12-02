@@ -54,7 +54,8 @@ h1 {
     justify-content: flex-end;
 }
 
-button {
+button,
+a.button {
     background: #2563eb;
     border: none;
     color: #fff;
@@ -62,10 +63,22 @@ button {
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
 }
 
-button:hover {
+button:hover,
+a.button:hover {
     background: #1d4ed8;
+}
+
+a.button.secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+a.button.secondary:hover {
+    background: #d1d5db;
 }
 
 .error {
@@ -172,6 +185,12 @@ header form {
     border-radius: 12px;
     padding: 16px;
     background: #f9fafb;
+}
+
+.form-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .empty-state {
